@@ -5,6 +5,7 @@ Projet personnel de création d'une application (et d'un site web) permettant à
 * Ecrans :construction:  
 * Interfaces :construction:  
 * Interactions :construction:  
+* **Sécurité/Confidentialité** :construction:  
 
 ## Technologies/Langages utilisés:  
 * Expo (React native)   
