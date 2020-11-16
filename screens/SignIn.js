@@ -1,5 +1,6 @@
-import React, { useState, Component} from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Alert, TouchableOpacity, Screen} from "react-native";
+import React from 'react';
+import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity, Screen, Button} from "react-native";
+import { AsyncStorage } from 'react-native';
 
 
 const ScreenContainer = ({ children }) => (
@@ -16,7 +17,7 @@ export default function SignIn({ navigation}) {
   const [passwordError, setPasswordError] = React.useState(false);
 
   
-  function authentification() {
+    function authentification() {
     if(emailVerification()){
       if(passwordVerification()){
         setError(" ");
@@ -32,7 +33,11 @@ export default function SignIn({ navigation}) {
           })
         }).then((response) => response.json())
         .then((json) => {
-          
+          if(json.hasOwnProperty('token')){ // SI LE COMPTE EXISTE BIEN
+            setToken(json['token']);
+            Alert.alert("CONNECTE");
+          }
+          else setError(json["message"]);
           console.log(json);
       }).catch((error) => {
           console.error(error);
@@ -43,7 +48,7 @@ export default function SignIn({ navigation}) {
       }
     }
     else{
-      setError("L'adresse email n'est pas correctement renseignée !");
+      setError("L'adresse e-mail n'est pas correctement renseignée !");
     }
   }
   
@@ -60,6 +65,33 @@ export default function SignIn({ navigation}) {
     if(valuePassword != null && valuePassword.length >= 4) return true;
     else return false;
   }
+
+  async function setToken(token){
+    console.log("ICIIII");
+    try {
+      AsyncStorage.setItem('userToken', JSON.stringify(token));
+      console.log("set token in asyncstorage");
+      
+    } catch (error) {
+      console.log("Something went wrong", error);
+    }
+  }
+
+  async function getToken(){
+    console.log("[");
+    AsyncStorage.getItem('userToken').then((token) => {
+      console.log("TOKEN:" + token);
+    });
+    console.log("]");
+  }
+
+  async function removeToken(){
+    AsyncStorage.removeItem('userToken').then(() => {
+      console.log("TOKEN SUPPRIME");
+    });
+  }
+
+  
 
   return (
     <ScreenContainer>
@@ -104,6 +136,10 @@ export default function SignIn({ navigation}) {
       <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")} style={styles.createAccountButton}>
         <Text style={styles.createAccountButtonText}>Créer un compte</Text>
       </TouchableOpacity>
+
+      <Button onPress={() => removeToken()} title="REMOVE TOKEN"></Button>
+      <Button onPress={() => setToken(1)} title="SET TOKEN"></Button>
+      <Button onPress={() => getToken()} title="GET TOKEN"></Button>
     </ScreenContainer>
   );
 };
