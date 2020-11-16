@@ -15,13 +15,12 @@ const styles = StyleSheet.create({
       borderRadius: 5
     }
   });
-  
 
 const ScreenContainer = ({ children }) => (
     <View style={styles.container}>{children}</View>
   );
   
-export default ForgetPassword = () => {  
+  export default function ForgetPassword({ navigation}) {
     return (
       <ScreenContainer>
         <Text>Forget Password Screen</Text>

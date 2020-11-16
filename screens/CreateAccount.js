@@ -5,72 +5,51 @@ import { View, Text, StyleSheet, TextInput, Button, Alert, TouchableOpacity} fro
 const ScreenContainer = ({ children }) => (
     <View style={styles.container}>{children}</View>
   );
-  
-const useLoginFormState = () => {
-  const [email1, setEmail1] = useState('');
-  const [email2, setEmail2] = useState('');
-  const [password1, setPassword1] = useState('');
-  const [password2, setPassword2] = useState('');
-  const [submit, setSubmit] = useState(false);
 
-  return {
-    email1: {
-      value: email1,
-      set: setEmail1,
-    },
-    email2: {
-      value: email2,
-      set: setEmail2,
-    },
-    password1: {
-      value: password1,
-      set: setPassword1,
-    },
-    password2: {
-      value: password2,
-      set: setPassword2,
-    },
-    submit: {
-      value: submit,
-      set: () => {
-        alert('ici');
-        setSubmit(true);
-      },
-    },
-  };
-};
 
-export default CreateAccount = () => {  
-  const { email1, email2, password1, password2, submit } = useLoginFormState();
+export default function CreateAccount({ navigation}) {
+  const [valueUsername, onChangeTextUsername] = React.useState();
+  const [valueEmail, onChangeTextEmail] = React.useState();
+  const [valuePassword1, onChangeTextPassword1] = React.useState();
+  const [valuePassword2, onChangeTextPassword2] = React.useState();
+
     return (
       <ScreenContainer>
         <Button title="Sign Up" onPress={() => alert('todo')} />
         <TextInput
-          keyboardType = 'email-address'
-          onChangeText={email1.setEmail1}
+          onChangeText={text => onChangeTextUsername(text)}
+          placeholder='username'
+          placeholderTextColor = 'grey'
+          autoCapitalize="none"
+          style={styles.input}
+        />
+
+        <TextInput
+          onChangeText={text => onChangeTextEmail(text)}
           placeholder='email'
           placeholderTextColor = 'grey'
           autoCapitalize="none"
           style={styles.input}
         />
-
         <TextInput
-          onChangeText={password1.setPassword}
-          placeholder={'mot de passe'}
-          secureTextEntry={true}
+          onChangeText={text => onChangeTextPassword1(text)}
+          placeholder='mot de passe'
           placeholderTextColor = 'grey'
           autoCapitalize="none"
           style={styles.input}
         />
 
         <TextInput
-          onChangeText={password2.setPassword}
-          placeholder={'répéter mot de passe'}
-          secureTextEntry={true}
+          onChangeText={text => onChangeTextPassword2(text)}
+          placeholder='répéter le mot de passe'
           placeholderTextColor = 'grey'
           autoCapitalize="none"
           style={styles.input}
         />
+
+      <TouchableOpacity onPress={() => Alert.alert("inscription")} style={styles.loginButton}>
+        <Text style={{fontSize:18}}>Inscription</Text>
+      </TouchableOpacity>
 
         <Button style={styles.forgetPasswordTitle} title="Forget Password" onPress={() => navigation.navigate("ForgetPassword")} />
       </ScreenContainer>
