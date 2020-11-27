@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet, Button, ActivityIndicator, StatusBar, AsyncStorage } from "react-native";
 
 
 const styles = StyleSheet.create({
@@ -21,9 +21,19 @@ const ScreenContainer = ({ children }) => (
     <View style={styles.container}>{children}</View>
   );
   
+async function getToken(){
+  console.log("[");
+  AsyncStorage.getItem('userToken').then((token) => {
+    console.log("TOKEN:" + token);
+  });
+  console.log("]");
+}
+
 const Splash = () => (
     <ScreenContainer>
-        <Text>Chargement en cours...</Text>
+      <Text>Chargement en cours...</Text>
+      <ActivityIndicator />
+      <StatusBar barStyle="default" />
     </ScreenContainer>
 );
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity, Screen, Button} from "react-native";
-import { AsyncStorage } from 'react-native';
 
+import Home from './Home';
 
 const ScreenContainer = ({ children }) => (
     <View style={styles.container}>{children}</View>
@@ -17,7 +17,7 @@ export default function SignIn({ navigation}) {
   const [passwordError, setPasswordError] = React.useState(false);
 
   
-    function authentification() {
+  function authentification() {
     if(emailVerification()){
       if(passwordVerification()){
         setError(" ");
@@ -34,8 +34,9 @@ export default function SignIn({ navigation}) {
         }).then((response) => response.json())
         .then((json) => {
           if(json.hasOwnProperty('token')){ // SI LE COMPTE EXISTE BIEN
-            setToken(json['token']);
+            //setToken(json['token']);
             Alert.alert("CONNECTE");
+           // navigation.navigate('Home');
           }
           else setError(json["message"]);
           console.log(json);
@@ -52,22 +53,19 @@ export default function SignIn({ navigation}) {
     }
   }
   
-  // RETURN TRUE IF EMAIL VALUE IS CORRECTLY FORMED
-  // FALSE IF NOT
+  // RETURN TRUE IF EMAIL VALUE IS CORRECTLY FORMED ELSE RETURN FALSE
   function emailVerification() {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(valueEmail);
   }
 
-  // RETURN TRUE IF PASSWORD VALUE IS NOT NULL AND 4 OR + CHARACTERS LONG 
-  // FALSE IF NOT
+  // RETURN TRUE IF PASSWORD VALUE IS NOT NULL AND 4 OR + CHARACTERS LONG ELSE RETURN FALSE
   function passwordVerification() {
     if(valuePassword != null && valuePassword.length >= 4) return true;
     else return false;
   }
 
-  async function setToken(token){
-    console.log("ICIIII");
+  /*async function setToken(token){
     try {
       AsyncStorage.setItem('userToken', JSON.stringify(token));
       console.log("set token in asyncstorage");
@@ -78,18 +76,16 @@ export default function SignIn({ navigation}) {
   }
 
   async function getToken(){
-    console.log("[");
     AsyncStorage.getItem('userToken').then((token) => {
       console.log("TOKEN:" + token);
     });
-    console.log("]");
   }
 
   async function removeToken(){
     AsyncStorage.removeItem('userToken').then(() => {
       console.log("TOKEN SUPPRIME");
     });
-  }
+  }*/
 
   
 

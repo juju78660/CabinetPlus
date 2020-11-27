@@ -17,14 +17,24 @@ import ForgetPassword from './screens/ForgetPassword';
 const Tabs = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-async function getToken() {
+async function getToken(){
+  AsyncStorage.getItem('userToken').then((token) => {
+    console.log("TOKEN:" + token);
+    userToken = token;
+    return token;
+  });
+}
+
+
+getData = async () => {
   try {
-    let userToken = await AsyncStorage.getItem("userData");
-    console.log(userToken);
-    let userTokenData = JSON.parse(userToken);
-    return userTokenData;
-  } catch (error) {
-    console.log("Something went wrong", error);
+    const value = await AsyncStorage.getItem('userToken')
+    if(value !== null) {
+      console.log("MDR" + value);
+      return value;
+    }
+  } catch(e) {
+    console.log(e);
   }
 }
 
@@ -32,34 +42,12 @@ export default () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [userToken, setUserToken] = React.useState(null);
 
-  let userToken2 = 0;
-
-  AsyncStorage.getItem('userToken').then((token) => {
-    console.log("TOKEN:" + token);
-  });
-  
-
-  const authContext = React.useMemo(() => {
-    return {
-      signIn: () => {
-        setIsLoading(false);
-        setUserToken("zzz");
-      },
-      signUp: () => {
-        setIsLoading(false);
-        setUserToken("zzz");
-      },
-      signOut: () => {
-        setIsLoading(false);
-        setUserToken(null);
-      }
-    }
-  }, []);
+  getData();
 
   React.useEffect(() =>{
     setTimeout(() => {
       setIsLoading(false);
-    }, 1000)
+    }, 5000)
   }, []);
 
   if(isLoading){
@@ -68,13 +56,13 @@ export default () => {
 
   return (
     <NavigationContainer>
-      
-      {userToken2 != 0 ? (
+      {userToken != null ? (
         <Tabs.Navigator>
           <Tabs.Screen name="Home" component={Home}/>
           <Tabs.Screen name="Profile" component={Profile}/>
         </Tabs.Navigator>
-      ) : (
+      ) : 
+      (
         <Stack.Navigator
           initialRouteName='SignIn'
           screenOptions={{

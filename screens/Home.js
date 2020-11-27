@@ -2,37 +2,31 @@ import React from 'react';
 import { View, Text, StyleSheet, Button } from "react-native";
 import { createStackNavigator } from '@react-navigation/stack';
 import { AsyncStorage } from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
 
 const ScreenContainer = ({ children }) => (
     <View style={styles.container}>{children}</View>
   );
   
-const HomeStack = createStackNavigator();
-
-const Home = () => (
-  <ScreenContainer>
-    <Text>Home Screen</Text>
-    <Button onPress={() => disconnect()} title="DISCONNECT"></Button>
+export default function SignIn({ navigation}) {
+  return (
+    <ScreenContainer>
+      <TextInput></TextInput>
+      <Text>TOKEN</Text>
+      <Text>Home Screen</Text>
+      <Button onPress={() => disconnect()} title="DISCONNECT"></Button>
   </ScreenContainer>
-);
+  );
+};
 
-const HomeStackScreen = () => (
-  <HomeStack.Navigator>
-    <HomeStack.Screen name="Home" component={Home}/>
-  </HomeStack.Navigator>
-);
+async function getToken(){
+  AsyncStorage.getItem('userToken').then((token) => {
+    console.log("TOKEN:" + token);
+  });
+}
 
 async function disconnect(){
-  try {
-    const value = await AsyncStorage.getItem('userToken');
-    if (value !== null) {
-      console.log(value);
-    }
-    else console.log("PAS DE TOKEN");
-  } catch (error) {
-    console.log(error);
-  }
-
+  console.log("disconnect");
   try {
     await AsyncStorage.removeItem("userToken");
     console.log("ici");
@@ -40,20 +34,7 @@ async function disconnect(){
   } catch (error) {
     console.log(error);
   }
-
-  try {
-    const value = await AsyncStorage.getItem('userToken');
-    if (value !== null) {
-      console.log(value);
-    }
-    else console.log("PAS DE TOKEN");
-  } catch (error) {
-    console.log(error);
-  }
 }
-
-
-export default HomeStackScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -66,5 +47,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginVertical: 10,
     borderRadius: 5
-  }
+  },
+  input: {
+    width:"90%",
+    fontSize: 20,
+    height: 44,
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    marginVertical: 10,
+    color:"#888"
+  },
 });
