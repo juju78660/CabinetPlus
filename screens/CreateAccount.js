@@ -17,6 +17,52 @@ export default function CreateAccount({ navigation}) {
   const [emailError, setEmailError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
 
+  function accountCreation() {
+    if(valueUsername.length >= 4){
+      if(emailVerification()){
+        if(passwordVerification()){
+          setError(" ");
+          fetch('http://localhost:8888/?action=authenticate', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'multipart/form-data'
+            },
+            body: JSON.stringify({
+              email: valueEmail,
+              password: valuePassword
+            })
+          }).then((response) => response.json())
+          .then((json) => {
+            if(json.hasOwnProperty('token')){ // SI LE COMPTE EXISTE BIEN
+              //setToken(json['token']);
+              Alert.alert("CONNECTE");
+             // navigation.navigate('Home');
+            }
+            else setError(json["message"]);
+            console.log(json);
+        }).catch((error) => {
+            console.error(error);
+        });
+        }
+        else{
+          if(valuePassword1.length < 4 || valuePassword1.length < 4) setError("Le mot de passe est trop court ! (4 caractères min.)");
+          else setError("Les mots de passe ne correspondent pas !");
+        }
+      }
+      else{
+        setError("L'adresse e-mail n'est pas correctement renseignée !");
+      }
+    }
+    else setError("Le nom d'utilisateur est trop court ! (4 caractères min.)");
+  }
+
+  // RETURN TRUE IF EMAIL VALUE IS CORRECTLY FORMED ELSE RETURN FALSE
+  function emailVerification() {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(valueEmail);
+  }
+  
   // RETURN TRUE IF EMAIL VALUE IS CORRECTLY FORMED ELSE RETURN FALSE
   function emailVerification() {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -40,6 +86,7 @@ export default function CreateAccount({ navigation}) {
           placeholder="nom d'utilisateur"
           placeholderTextColor = 'grey'
           autoCapitalize="none"
+          autoCorrect={false}
           style={styles.input}
         />
 
@@ -49,6 +96,7 @@ export default function CreateAccount({ navigation}) {
           placeholder='email'
           placeholderTextColor = 'grey'
           autoCapitalize="none"
+          autoCorrect={false}
           style={[styles.input, {borderColor: emailError
             ? 'red'
             : 'black',
@@ -60,6 +108,7 @@ export default function CreateAccount({ navigation}) {
           placeholder='mot de passe'
           placeholderTextColor = 'grey'
           autoCapitalize="none"
+          secureTextEntry
           style={[styles.input, {borderColor: passwordError
             ? 'red'
             : 'black',
@@ -72,13 +121,16 @@ export default function CreateAccount({ navigation}) {
           placeholder='répéter le mot de passe'
           placeholderTextColor = 'grey'
           autoCapitalize="none"
+          secureTextEntry
           style={[styles.input, {borderColor: passwordError
             ? 'red'
             : 'black',
           }]}
         />
 
-      <TouchableOpacity onPress={() => Alert.alert("inscription")} style={styles.loginButton}>
+      <Text style={{fontWeight:'bold', fontSize:12, color:'red'}}>{error}</Text>
+
+      <TouchableOpacity onPress={() => accountCreation()} style={styles.loginButton}>
         <Text style={{fontSize:18}}>Inscription</Text>
       </TouchableOpacity>
       </ScreenContainer>

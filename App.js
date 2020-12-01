@@ -2,8 +2,9 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { AsyncStorage } from 'react-native';
 
+import { Provider, connect } from 'react-redux';
+import { store, persistor, setCurrentLocation } from 'react-redux';
 
 import SignIn from './screens/SignIn';
 import CreateAccount from './screens/CreateAccount';
@@ -17,32 +18,11 @@ import ForgetPassword from './screens/ForgetPassword';
 const Tabs = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-async function getToken(){
-  AsyncStorage.getItem('userToken').then((token) => {
-    console.log("TOKEN:" + token);
-    userToken = token;
-    return token;
-  });
-}
-
-
-getData = async () => {
-  try {
-    const value = await AsyncStorage.getItem('userToken')
-    if(value !== null) {
-      console.log("MDR" + value);
-      return value;
-    }
-  } catch(e) {
-    console.log(e);
-  }
-}
 
 export default () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [userToken, setUserToken] = React.useState(null);
 
-  getData();
 
   React.useEffect(() =>{
     setTimeout(() => {

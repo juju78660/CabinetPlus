@@ -132,10 +132,6 @@ export default function SignIn({ navigation}) {
       <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")} style={styles.createAccountButton}>
         <Text style={styles.createAccountButtonText}>Créer un compte</Text>
       </TouchableOpacity>
-
-      <Button onPress={() => removeToken()} title="REMOVE TOKEN"></Button>
-      <Button onPress={() => setToken(1)} title="SET TOKEN"></Button>
-      <Button onPress={() => getToken()} title="GET TOKEN"></Button>
     </ScreenContainer>
   );
 };
