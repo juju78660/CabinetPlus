@@ -3,52 +3,32 @@ import axios from 'axios';
 //
 // Action...
 //
-/*export const onUserLogin = ({email, password}) => {
+export const onUserLogIn = ({email, password}) => {
     return async (dispatch) => {
         try{
-            const response = await fetch('http://localhost:8888/?action=authenticate', {
-                method: 'POST',
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'multipart/form-data'
-                },
-                body: JSON.stringify({
-                  email: email,
-                  password: password
-                })
-              }).then((response) => response.json())
-              .then((json) => {
-                if(json.hasOwnProperty('token')){ // SI LE COMPTE EXISTE BIEN
-                  //setToken(json['token']);
-                  Alert.alert("CONNECTE");
-                  return "CONNECTE";
-                 // navigation.navigate('Home');
-                }
-                else return "NON CONNECTE";
-              });
-              
-              dispatch({type: 'DO_LOGIN', value: response});
+            const response = await axios.post('http://localhost:8888/?action=authenticate', {email, password});
+            dispatch({type: 'DO_LOGIN', payload: response.data});
+            dispatch({type: 'ON_ERROR', payload: ""});
         }
         catch (error){
-            dispatch({type: 'ON_ERROR', value: error});
+            dispatch({type: 'ON_ERROR', payload: "Email/Mot de passe incorrect !"});
         }
     }
-}*/
+}
 
-export const onUserLogin = ({email, password}) => {
+export const onUserLogOut = ({}) => {
     return async (dispatch) => {
         try{
-            const response = await axios.post('https://netflix-example.herokuapp.com/user/mock-login', {email, password});
-            console.log(response);
-            dispatch({type: 'DO_LOGIN', payload: response.data});
+            dispatch({type: 'DO_LOGOUT'});
         }
         catch (error){
             dispatch({type: 'ON_ERROR', payload: error});
         }
     }
+    
 }
 
-export const onFetchProduct = () => {
+/* export const onFetchProduct = () => {
     return async (dispatch) => {
         try{
             const response = {
@@ -64,4 +44,4 @@ export const onFetchProduct = () => {
             dispatch({type: 'ON_ERROR', payload: error});
         }
     }
-}
+} */

@@ -14,6 +14,12 @@ export default function (state = initialState, action) {
                 currentUser: action.payload,
             };
 
+        case 'DO_LOGOUT':
+            return {
+                ...state,
+                currentUser: null,
+            };
+
         case 'FETCH_PRODUCT':
             return {
                 ...state,
