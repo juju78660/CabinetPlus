@@ -1,40 +1,52 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from "react-native";
-import { createStackNavigator } from '@react-navigation/stack';
-import { AsyncStorage } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, Button, Alert } from "react-native";
 
-const ScreenContainer = ({ children }) => (
-    <View style={styles.container}>{children}</View>
-  );
-  
-export default function SignIn({ navigation}) {
+//REDUX
+import { connect } from 'react-redux';
+import { onUserLogin, onFetchProduct } from '../redux/actions';
+
+import AuthNavigator from '../navigation/AuthNavigator';
+import MainNavigator from '../navigation/MainNavigator';
+
+const Home = (props) => {
+  const {userReducer, onUserLogin, onFetchProduct} = props;
+
+  const {currentUser, products, appError} = userReducer;
+
+  console.log(currentUser, products, appError); 
+
   return (
-    <ScreenContainer>
-      <TextInput></TextInput>
-      <Text>TOKEN</Text>
+    <View style={styles.container}>
+      {/* {(currentUser !== null) ? <MainNavigator /> : <AuthNavigator />} */}
       <Text>Home Screen</Text>
-      <Button onPress={() => disconnect()} title="DISCONNECT"></Button>
-  </ScreenContainer>
+      {currentUser !== null && (
+        <Text>{currentUser.firstName} {currentUser.lastName}</Text>
+      )}
+      <Button onPress={() => onUserLogin({email: "test@test.com", password: "1234567"})} title="LOG IN"></Button>
+      <Button onPress={() => onUserLogin({email: "test@test.com", password: "1234567"})} title="DISCONNECT"></Button>
+      <Button onPress={() => onFetchProduct()} title="FETCH PRODUCTS"></Button>
+      {products !== undefined && (
+        <Text>
+          {' '} 
+          {JSON.stringify(products)}{''}
+        </Text>
+      )}
+      {appError !== undefined && (
+        <Text>
+          erreur: {appError}
+        </Text>
+      )}
+  </View>
   );
 };
 
-async function getToken(){
-  AsyncStorage.getItem('userToken').then((token) => {
-    console.log("TOKEN:" + token);
-  });
-}
+const mapStateToProps = (state) => ({
+  userReducer : state.userReducer,
+});
 
-async function disconnect(){
-  console.log("disconnect");
-  try {
-    await AsyncStorage.removeItem("userToken");
-    console.log("ici");
+const HomeScreen = connect(mapStateToProps, { onUserLogin, onFetchProduct })(Home);
 
-  } catch (error) {
-    console.log(error);
-  }
-}
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {

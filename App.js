@@ -1,61 +1,44 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { Provider, connect } from 'react-redux';
-import { store, persistor, setCurrentLocation } from 'react-redux';
+// REDUX
+import { Provider } from 'react-redux';
+import { store, appPersist } from './redux/store';
+import { PersistGate } from 'redux-persist/integration/react'
 
-import SignIn from './screens/SignIn';
-import CreateAccount from './screens/CreateAccount';
-import Profile from './screens/Profile';
-import Home from './screens/Home';
-import Splash from './screens/Splash';
-import AuthNavigator from './screens/AuthNavigation';
-import ForgetPassword from './screens/ForgetPassword';
+import AuthNavigator from './navigation/AuthNavigator';
+import MainNavigator from './navigation/MainNavigator';
 
-
-const Tabs = createBottomTabNavigator();
-const Stack = createStackNavigator();
-
+import HomeScreen from './screens/Home';
 
 export default () => {
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={appPersist}>
+        < HomeScreen />
+      </PersistGate>
+    </Provider>
+  );
+  /*
   const [isLoading, setIsLoading] = React.useState(true);
   const [userToken, setUserToken] = React.useState(null);
 
+  this.state = {
+    isLoadingComplete: false,
+    isAuthenticationReady: false,
+    isAuthenticated: false,
+  };
 
-  React.useEffect(() =>{
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 5000)
-  }, []);
-
-  if(isLoading){
-    return <Splash/>;
+  onAuthStateChanged = (user) => {
+    this.setState({isAuthenticationReady: true});
+    this.setState({isAuthenticated: !!user});
   }
 
+  
   return (
-    <NavigationContainer>
-      {userToken != null ? (
-        <Tabs.Navigator>
-          <Tabs.Screen name="Home" component={Home}/>
-          <Tabs.Screen name="Profile" component={Profile}/>
-        </Tabs.Navigator>
-      ) : 
-      (
-        <Stack.Navigator
-          initialRouteName='SignIn'
-          screenOptions={{
-            gestureEnabled: true,
-            headerBackTitleVisible: false,
-            headerShown: false
-          }}>
-          <Stack.Screen name="AuthNavigator" component={AuthNavigator}/>
-          <Stack.Screen name="SignIn" component={SignIn}/>
-          <Stack.Screen name="CreateAccount" component={CreateAccount}/>
-          <Stack.Screen name="ForgetPassword" component={ForgetPassword}/>
-        </Stack.Navigator>
-      )}
-    </NavigationContainer>
-  );
+    <Provider store={store}>
+      <NavigationContainer>
+        {(!this.state.isAuthenticated) ? <MainNavigator /> : <AuthNavigator />}
+      </NavigationContainer>
+    </Provider>
+  );*/
 };

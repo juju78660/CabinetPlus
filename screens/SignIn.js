@@ -1,14 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity, Screen, Button} from "react-native";
 
-import Home from './Home';
+//REDUX
+import { connect } from 'react-redux';
+import { onUserLogin, onFetchProduct } from '../redux/actions';
 
 const ScreenContainer = ({ children }) => (
     <View style={styles.container}>{children}</View>
   );
   
 export default function SignIn({ navigation}) {
-  const API_URL = "http://localhost:8888/";
   const [valueEmail, onChangeTextEmail] = React.useState();
   const [valuePassword, onChangeTextPassword] = React.useState();
 
@@ -40,9 +41,9 @@ export default function SignIn({ navigation}) {
           }
           else setError(json["message"]);
           console.log(json);
-      }).catch((error) => {
-          console.error(error);
-      });
+        }).catch((error) => {
+            console.error(error);
+        });
       }
       else{
         setError("Le mot de passe est trop court ! (4 caractères min.)");
@@ -64,30 +65,6 @@ export default function SignIn({ navigation}) {
     if(valuePassword != null && valuePassword.length >= 4) return true;
     else return false;
   }
-
-  /*async function setToken(token){
-    try {
-      AsyncStorage.setItem('userToken', JSON.stringify(token));
-      console.log("set token in asyncstorage");
-      
-    } catch (error) {
-      console.log("Something went wrong", error);
-    }
-  }
-
-  async function getToken(){
-    AsyncStorage.getItem('userToken').then((token) => {
-      console.log("TOKEN:" + token);
-    });
-  }
-
-  async function removeToken(){
-    AsyncStorage.removeItem('userToken').then(() => {
-      console.log("TOKEN SUPPRIME");
-    });
-  }*/
-
-  
 
   return (
     <ScreenContainer>

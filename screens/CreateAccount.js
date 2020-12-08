@@ -79,7 +79,7 @@ export default function CreateAccount({ navigation}) {
   }
 
     return (
-      <ScreenContainer>
+      <View style={styles.container}>
         <Button title="Sign Up" onPress={() => alert('todo')} />
         <TextInput
           onChangeText={text => onChangeTextUsername(text)}
@@ -128,12 +128,12 @@ export default function CreateAccount({ navigation}) {
           }]}
         />
 
-      <Text style={{fontWeight:'bold', fontSize:12, color:'red'}}>{error}</Text>
+        <Text style={{fontWeight:'bold', fontSize:12, color:'red'}}>{error}</Text>
 
-      <TouchableOpacity onPress={() => accountCreation()} style={styles.loginButton}>
-        <Text style={{fontSize:18}}>Inscription</Text>
-      </TouchableOpacity>
-      </ScreenContainer>
+        <TouchableOpacity onPress={() => accountCreation()} style={styles.loginButton}>
+          <Text style={{fontSize:18}}>Inscription</Text>
+        </TouchableOpacity>
+      </View>
     );
   };
 
