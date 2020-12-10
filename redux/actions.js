@@ -6,12 +6,15 @@ import axios from 'axios';
 export const onUserLogIn = ({email, password}) => {
     return async (dispatch) => {
         try{
+            dispatch({type: 'ON_ERROR', payload: ""});
             const response = await axios.post('http://localhost:8888/?action=authenticate', {email, password});
             dispatch({type: 'DO_LOGIN', payload: response.data});
-            dispatch({type: 'ON_ERROR', payload: ""});
         }
         catch (error){
-            dispatch({type: 'ON_ERROR', payload: "Email/Mot de passe incorrect !"});
+            if(error == "Error: Network Error") dispatch({type: 'ON_ERROR', payload: "Serveur inaccessible ! Etes vous connecté à internet ?"});
+            else {
+                dispatch({type: 'ON_ERROR', payload: "Email/mot de passe incorrect"});
+            }
         }
     }
 }

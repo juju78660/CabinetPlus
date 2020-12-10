@@ -7,6 +7,7 @@ const initialState = {
 }
 
 export default function (state = initialState, action) {
+    // console.log("SWITCH ACTION:" + action.type + "\nVALUE:" + action.payload);
     switch(action.type){
         case 'DO_LOGIN':
             return {

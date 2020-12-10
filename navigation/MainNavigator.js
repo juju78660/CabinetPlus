@@ -1,24 +1,49 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import SignIn from '../screens/SignIn';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+
+import Home from '../screens/Home';
 import Profile from '../screens/Profile';
 
-  
-const Tabs = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
-const ScreenContainer = ({ children }) => (
-    <View style={styles.container}>{children}</View>
-  );
 
-const MainNavigator = () => (
-    <ScreenContainer>
-        <Tabs.Navigator>
-            <Tabs.Screen name="SignIn" component={SignIn}/>
-            <Tabs.Screen name="Profile" component={Profile}/>
-        </Tabs.Navigator>
-    </ScreenContainer>
+const MainNavigator = ({navigation}) => (
+  <Tab.Navigator screenOptions={({ route }) => ({
+    tabBarIcon: ({ focused, color, size }) => {
+      let iconName;
+
+      if (route.name === 'Home') {
+        iconName = "home"
+      } else if (route.name === 'Profile') {
+        iconName = "account";
+      }
+
+      // You can return any component that you like here!
+      <MaterialCommunityIcons name={iconName} color={color} size={20} />
+    },
+  })}
+  tabBarOptions={{
+    activeTintColor: 'black',
+    inactiveTintColor: 'gray',
+  }}
+>
+    <Tab.Screen name="Home" component={Home} options={{
+            tabBarLabel: "Accueil",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="home" color={color} size={size} />
+            ),
+          }}/>
+    <Tab.Screen name="Profile" component={Profile} options={{
+            tabBarLabel: "Profil",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="account" color={color} size={size} />
+            ),
+          }}/>
+  </Tab.Navigator>
 );
 
 export default MainNavigator;

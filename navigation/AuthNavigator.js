@@ -8,25 +8,20 @@ import SignIn from '../screens/SignIn';
 import CreateAccount from '../screens/CreateAccount';
 import ForgetPassword from '../screens/ForgetPassword';
 
-
-
 const Stack = createStackNavigator();
 
-
-const AuthNavigator = () => (
-  <NavigationContainer style={styles.container}>
-    <Stack.Navigator style={styles.container}
-      initialRouteName='SignIn'
-      screenOptions={{
-        headerBackTitleVisible: false,
-        headerShown: false,
-        gestureEnabled: true
-      }}>
-      <Stack.Screen name="SignIn" component={SignIn}/>
-      <Stack.Screen name="CreateAccount" component={CreateAccount}/>
-      <Stack.Screen name="ForgetPassword" component={ForgetPassword}/>
-    </Stack.Navigator>
-    </NavigationContainer>
+const AuthNavigator = ({navigation}) => (
+  <Stack.Navigator style={styles.container}
+    initialRouteName='SignIn'
+    screenOptions={{
+      headerBackTitleVisible: false,
+      headerShown: false,
+      gestureEnabled: true
+    }}>
+    <Stack.Screen name="SignIn" component={SignIn}/>
+    <Stack.Screen name="CreateAccount" component={CreateAccount}/>
+    <Stack.Screen name="ForgetPassword" component={ForgetPassword}/>
+  </Stack.Navigator>
 );
 
 export default AuthNavigator;

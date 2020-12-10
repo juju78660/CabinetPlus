@@ -8,13 +8,12 @@ import reducer from "./reducers";
 const persistConfig = {
     key : 'root',
     storage : AsyncStorage,
-    /*blacklist: ['currentUser'] */
+    blacklist: ['appError'] 
 }
 
 const rootReducer = combineReducers({
     userReducer : persistReducer(persistConfig, reducer)
 })
-
 
 // Store...
 const store = createStore(rootReducer ,applyMiddleware(thunk));

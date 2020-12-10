@@ -1,42 +1,49 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from "react-native";
-import { createStackNavigator } from '@react-navigation/stack';
 
+//REDUX
+import { connect } from 'react-redux';
+import { onUserLogOut, onUserLogIn, onFetchProduct } from '../redux/actions';
 
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center"
-    },
-    button: {
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      marginVertical: 10,
-      borderRadius: 5
-    }
-  });
-  
 
 const ScreenContainer = ({ children }) => (
-    <View style={styles.container}>{children}</View>
-  );
-  
+  <View style={styles.container}>{children}</View>
+);
 
-const ProfileStack = createStackNavigator();
+const Profile = (props) => {
+  const {userReducer, onUserLogIn, onUserLogOut, onFetchProduct} = props;
 
-const Profile = () => (
+  const {currentUser, products, appError} = userReducer;
+
+
+  return (
     <ScreenContainer>
-        <Text>Profile Screen</Text>
-        <Button title="Drawer" onPress={() => alert('todo')} />
-        <Button title="Sign Out" onPress={() => alert('todo')} />
+      <Text>Profil</Text>
+      <Text>{currentUser.username}</Text>
+      <Button title="Drawer" onPress={() => alert('todo')} />
+      <Button title="Sign Out" onPress={() => onUserLogOut({})} />
     </ScreenContainer>
-);
+  );
+};
 
-const ProfileStackScreen = () => (
-    <ProfileStack.Navigator>
-        <ProfileStack.Screen name="Profile" component={Profile}/>
-    </ProfileStack.Navigator>
-);
+const mapStateToProps = (state) => ({
+  userReducer : state.userReducer,
+});
 
-export default ProfileStackScreen;
+const ProfileScreen = connect(mapStateToProps, { onUserLogIn, onUserLogOut, onFetchProduct })(Profile);
+
+export default ProfileScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  button: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginVertical: 10,
+    borderRadius: 5
+  }
+});
