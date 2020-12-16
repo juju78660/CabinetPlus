@@ -50,6 +50,7 @@ const ScreenContainer = ({ children }) => (
   }
     return (
       <ScreenContainer>
+        <Text style={{fontSize:40}}>Réinitialiser le mot de passe</Text>
         <TextInput
           keyboardType = 'email-address'
           onChangeText= {text => onChangeTextEmail(text)}

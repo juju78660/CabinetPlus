@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet, Button, TouchableOpacity, SafeAreaView } from "react-native";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 //REDUX
 import { connect } from 'react-redux';
@@ -7,21 +9,23 @@ import { onUserLogOut, onUserLogIn, onFetchProduct } from '../redux/actions';
 
 
 const ScreenContainer = ({ children }) => (
-  <View style={styles.container}>{children}</View>
+  <SafeAreaView style={styles.container}>{children}</SafeAreaView>
 );
 
 const Profile = (props) => {
-  const {userReducer, onUserLogIn, onUserLogOut, onFetchProduct} = props;
+  const {userReducer, onUserLogIn, onUserLogOut} = props;
 
-  const {currentUser, products, appError} = userReducer;
-
-
+  const {currentUser} = userReducer;
+  console.log(currentUser);
   return (
     <ScreenContainer>
-      <Text>Profil</Text>
+      <Text style={{fontSize:40, alignSelf: 'center'}}>Profil</Text>
+      <View style={{flexDirection: 'row', justifyContent: 'flex-end', width:"100%"}}>
+        <TouchableOpacity onPress={() => onUserLogOut({})} >
+          <MaterialCommunityIcons name='logout' size={40} style={styles.inputImage}/>
+        </TouchableOpacity>
+      </View>
       <Text>{currentUser.username}</Text>
-      <Button title="Drawer" onPress={() => alert('todo')} />
-      <Button title="Sign Out" onPress={() => onUserLogOut({})} />
     </ScreenContainer>
   );
 };
@@ -37,13 +41,16 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center"
   },
-  button: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginVertical: 10,
-    borderRadius: 5
+  button:{
+    width:"90%",
+    backgroundColor:"#cccccc",
+    borderRadius:25,
+    height:50,
+    alignItems:"center",
+    justifyContent:"center",
+    marginTop:10,
+    marginBottom:10
   }
 });

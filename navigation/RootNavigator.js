@@ -17,19 +17,6 @@ const RootNavigator = (props) => {
   return (
     <NavigationContainer style={styles.container}>
       {(currentUser !== null) ? <MainNavigator /> : <AuthNavigator />}
-      {/* <Text>Home Screen</Text>
-
-      {(currentUser !== null) ? (<Text>{currentUser.username} {currentUser.email}</Text>) : (<Text>AUCUN UTILISATEUR</Text>)}
-      <Button onPress={() => onUserLogIn({email: "test@test.fr", password: "loluser"})} title="LOG IN"></Button>
-      <Button onPress={() => onUserLogOut({})} title="LOG OUT"></Button>
-      <Button onPress={() => onFetchProduct()} title="FETCH PRODUCTS"></Button>
-      {products !== undefined && (
-        <Text>
-          {' '} 
-          {JSON.stringify(products)}{''}
-        </Text>
-      )}
-      {(appError!== null) ? (<Text>{appError}</Text>) : (<Text>AUCUNE ERREUR</Text>)} */}
   </NavigationContainer>
   );
 };

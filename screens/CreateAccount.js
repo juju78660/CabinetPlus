@@ -1,192 +1,313 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Alert, TouchableOpacity} from "react-native";
-  
+import { View, Button, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Alert} from "react-native";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import axios from 'axios';
+
+
+//REDUX
+import { connect } from 'react-redux';
+import { onUserLogIn, onUserLogOut, onFetchProduct } from '../redux/actions';
 
 const ScreenContainer = ({ children }) => (
-    <View style={styles.container}>{children}</View>
+  <SafeAreaView style={styles.container}>{children}</SafeAreaView>
   );
+  
+const CreateAccount = (props) => {
+  const { navigate } = props.navigation;
 
-
-export default function CreateAccount({ navigation}) {
   const [valueUsername, onChangeTextUsername] = React.useState();
   const [valueEmail, onChangeTextEmail] = React.useState();
   const [valuePassword1, onChangeTextPassword1] = React.useState();
   const [valuePassword2, onChangeTextPassword2] = React.useState();
 
+  const [successMessage, setSuccessMessage] = React.useState(false);
   const [error, setError] = React.useState(false);
+  const [usernameError, setUsernameError] = React.useState(false);
   const [emailError, setEmailError] = React.useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState();
   const [passwordError, setPasswordError] = React.useState(false);
+  const [passwordHidden, setPasswordHidden] = React.useState(true);
 
-  function accountCreation() {
-    if(valueUsername.length >= 4){
+  const {userReducer, onUserLogIn, onUserLogOut, onFetchProduct} = props;
+
+  const {currentUser, products, appError} = userReducer;
+  if(appError != "" && appError != error){
+    setError(appError);
+  }
+  
+  function signUpVerification() {
+    setError("");
+    if(usernameVerification()){
       if(emailVerification()){
         if(passwordVerification()){
-          setError(" ");
-          fetch('http://localhost:8888/?action=authenticate', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'multipart/form-data'
-            },
-            body: JSON.stringify({
-              email: valueEmail,
-              password: valuePassword
-            })
-          }).then((response) => response.json())
-          .then((json) => {
-            if(json.hasOwnProperty('token')){ // SI LE COMPTE EXISTE BIEN
-              //setToken(json['token']);
-              Alert.alert("CONNECTE");
-             // navigation.navigate('Home');
-            }
-            else setError(json["message"]);
-            console.log(json);
-        }).catch((error) => {
-            console.error(error);
-        });
+          setUsernameError(false);
+          setEmailError(false);
+          setPasswordError(false);
+          Alert.alert("INSCRIPTION");
+          //onUserLogIn({email: valueEmail, password: valuePassword});
         }
         else{
-          if(valuePassword1.length < 4 || valuePassword1.length < 4) setError("Le mot de passe est trop court ! (4 caractères min.)");
-          else setError("Les mots de passe ne correspondent pas !");
+          setError(passwordErrorMessage);
         }
       }
       else{
         setError("L'adresse e-mail n'est pas correctement renseignée !");
       }
     }
-    else setError("Le nom d'utilisateur est trop court ! (4 caractères min.)");
+    else{
+      setError("Le nom d'utilisateur est trop court ! (6 caractères min.)");
+    }
   }
 
-  // RETURN TRUE IF EMAIL VALUE IS CORRECTLY FORMED ELSE RETURN FALSE
-  function emailVerification() {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(valueEmail);
+  async function accountCreation() {
+    setError("");
+    setSuccessMessage("");
+    if(usernameVerification()){
+      if(emailVerification()){
+        if(passwordVerification()){
+          setUsernameError(false);
+          setEmailError(false);
+          setPasswordError(false);
+          const username = valueUsername;
+          const email = valueEmail;
+          const password = valuePassword1;
+          axios.post('http://localhost:8888/?action=users', {username, email, password})
+          .then(function(){
+            console.log("CA MARCHE");
+            setSuccessMessage("Le compte a bien été crée");
+          })
+          .catch(function (error) {
+            if (error.response) {
+              // The request was made and the server responded with a status code
+              // that falls out of the range of 2xx
+              var data = error.response.data;
+              if(data.includes("email")){
+                setError("L'email " + email + " est déjà utilisé !");
+              }
+              else{
+                setError("Erreur: " + error.response.data);
+                //console.log(error.response.data);
+              }
+            }
+            else if (error.request) { // The request was made but no response was received
+              setError("Serveur inaccessible ! Etes vous connecté à internet ?");
+              //console.log("PAS DE CONNEXION" + error.request);
+            }
+            else { // Something happened in setting up the request that triggered an Error
+              console.log('Error', error.message);
+            }
+          });
+        }
+        else{
+          setError(passwordErrorMessage);
+        }
+      }
+      else{
+        setError("L'adresse e-mail n'est pas correctement renseignée !");
+      }
+    }
+    else{
+      setError("Le nom d'utilisateur est trop court ! (6 caractères min.)");
+    }
   }
   
-  // RETURN TRUE IF EMAIL VALUE IS CORRECTLY FORMED ELSE RETURN FALSE
-  function emailVerification() {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(valueEmail);
-  }
-
-  // RETURN TRUE IF PASSWORD VALUE IS NOT NULL AND 4 OR + CHARACTERS LONG ELSE RETURN FALSE
-  function passwordVerification() {
-    if(valuePassword1 == null || valuePassword2 == null) return true;
-    else if (valuePassword1 === valuePassword2 && valuePassword1.length >= 4){
-      return true;
-    }
+  // RETURN TRUE IF USERNAME VALUE IS NOT NULL AND 6 OR + CHARACTERS LONG ELSE RETURN FALSE
+  function usernameVerification() {
+    if(valueUsername != null && valueUsername.length >= 6) return true;
     else return false;
   }
 
-    return (
-      <View style={styles.container}>
-        <Button title="Sign Up" onPress={() => alert('todo')} />
+  // RETURN TRUE IF EMAIL VALUE IS CORRECTLY FORMED ELSE RETURN FALSE
+  function emailVerification() {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(valueEmail);
+  }
+
+  // RETURN TRUE IF PASSWORD VALUE IS NOT NULL AND 6 OR + CHARACTERS LONG ELSE RETURN FALSE
+  function passwordVerification() {
+    if(valuePassword1 == null || valuePassword2 == null){
+      setPasswordErrorMessage("L'un des mots de passe n'est pas correctement renseigné");
+      return false;
+    } 
+    else if (valuePassword1 === valuePassword2 && valuePassword1.length >= 6){
+      return true;
+    }
+    else{
+      setPasswordErrorMessage("Les mots de passe entrés ne sont pas identiques !");
+      return false;
+    } 
+  }
+
+  return (
+    <ScreenContainer>
+      <Text style={{fontSize:40}}>Inscription</Text>
+
+      {/* NOM UTILISATEUR */}
+      <View style={[styles.inputContainer]}>
+        <MaterialCommunityIcons name={"account"} size={30} style={styles.inputImage}/>
         <TextInput
-          onChangeText={text => onChangeTextUsername(text)}
+          onBlur= {() => setUsernameError(!usernameVerification())}
+          onChangeText= {text => onChangeTextUsername(text)}
           placeholder="nom d'utilisateur"
-          placeholderTextColor = 'grey'
+          placeholderTextColor = 'lightgrey'
           autoCapitalize="none"
           autoCorrect={false}
-          style={styles.input}
+          style={[styles.input, {color: usernameError
+            ? '#C0392B'
+            : 'black',
+          }]}
         />
+      </View>
 
+      {/* EMAIL */}
+      <View style={[styles.inputContainer]}>
+        <MaterialCommunityIcons name={"at"} size={28} style={[styles.inputImage, {paddingLeft:4}]}/>
         <TextInput
+          keyboardType = 'email-address'
           onBlur= {() => setEmailError(!emailVerification())}
-          onChangeText={text => onChangeTextEmail(text)}
+          onChangeText= {text => onChangeTextEmail(text)}
           placeholder='email'
-          placeholderTextColor = 'grey'
+          placeholderTextColor = 'lightgrey'
           autoCapitalize="none"
           autoCorrect={false}
-          style={[styles.input, {borderColor: emailError
-            ? 'red'
+          style={[styles.input, {color: emailError
+            ? '#C0392B'
             : 'black',
           }]}
         />
+      </View>
+      
+      {/* MOT DE PASSE */}
+      <View style={styles.inputContainer}>
+        <MaterialCommunityIcons name={"lock"} size={30} style={[styles.inputImage, {paddingLeft:3}]}/>
         <TextInput
           onBlur= {() => setPasswordError(!passwordVerification())}
-          onChangeText={text => onChangeTextPassword1(text)}
+          onChangeText= {text => onChangeTextPassword1(text)}
           placeholder='mot de passe'
-          placeholderTextColor = 'grey'
+          placeholderTextColor = 'lightgrey'
+          secureTextEntry={passwordHidden}
           autoCapitalize="none"
-          secureTextEntry
-          style={[styles.input, {borderColor: passwordError
-            ? 'red'
+          autoCorrect={false}
+          style={[styles.input, {color: passwordError
+            ? '#C0392B'
             : 'black',
           }]}
         />
-
-        <TextInput
-          onBlur= {() => setPasswordError(!passwordVerification())}
-          onChangeText={text => onChangeTextPassword2(text)}
-          placeholder='répéter le mot de passe'
-          placeholderTextColor = 'grey'
-          autoCapitalize="none"
-          secureTextEntry
-          style={[styles.input, {borderColor: passwordError
-            ? 'red'
-            : 'black',
-          }]}
-        />
-
-        <Text style={{fontWeight:'bold', fontSize:12, color:'red'}}>{error}</Text>
-
-        <TouchableOpacity onPress={() => accountCreation()} style={styles.loginButton}>
-          <Text style={{fontSize:18}}>Inscription</Text>
+        <TouchableOpacity onPress={() => setPasswordHidden(!passwordHidden)} style={styles.inputImage}>
+          <MaterialCommunityIcons name={passwordHidden ? 'eye' : 'eye-off'} size={25} style={styles.inputImage}/>
         </TouchableOpacity>
       </View>
-    );
-  };
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center"
-    },
-    input: {
-      width:"80%",
-      fontSize: 20,
-      height: 44,
-      padding: 10,
-      borderWidth: 1,
-      borderRadius: 5,
-      borderColor: 'grey',
-      marginVertical: 10,
-      color:"#888"
-    },
-    forgetPasswordButton:{
-      fontSize:12,
-      color:"gray",
-      marginBottom: 20,
-    },
-    forgetPasswordButtonText:{
-      marginLeft: 180,
-      textDecorationLine: 'underline',
-    },
-    loginButton:{
-      width:"80%",
-      backgroundColor:"#cccccc",
-      borderRadius:25,
-      height:50,
-      alignItems:"center",
-      justifyContent:"center",
-      marginTop:10,
-      marginBottom:10
-    },
-    loginButtonText:{
-      fontSize:18
-    },
-    createAccountButton:{
-      width:"80%",
-      borderRadius:25,
-      borderWidth: 1,
-      height:50,
-      alignItems:"center",
-      justifyContent:"center",
-      marginTop:10,
-      marginBottom:10
-    },
-    createAccountButtonText:{
-      fontSize:18
-    }
-  });
+      {/* REPETER MOT DE PASSE */}
+      <View style={styles.inputContainer}>
+        <MaterialCommunityIcons name={"lock"} size={30} style={[styles.inputImage, {paddingLeft:3}]}/>
+        <TextInput
+          onBlur= {() => setPasswordError(!passwordVerification())}
+          onChangeText= {text => onChangeTextPassword2(text)}
+          placeholder='répéter mot de passe'
+          placeholderTextColor = 'lightgrey'
+          secureTextEntry={passwordHidden}
+          autoCapitalize="none"
+          autoCorrect={false}
+          style={[styles.input, {color: passwordError
+            ? '#C0392B'
+            : 'black',
+          }]}
+        />
+      </View>
+
+      {(error!== "") ? (<Text style={styles.errorText}>{error}</Text>) : ( (successMessage !== "") ? (<Text style={styles.successText}>{successMessage}</Text>) : (<Text style={styles.successText}></Text>) )}
+
+      <TouchableOpacity onPress={() => accountCreation()} style={styles.loginButton}>
+        <Text style={{fontSize:18}}>Créer un compte</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity onPress={() => navigate("SignIn")} style={styles.createAccountButton}>
+        <Text style={styles.createAccountButtonText}>Vous avez déjà un compte ? Se connecter</Text>
+      </TouchableOpacity>
+    </ScreenContainer>
+  );
+};
+
+const mapStateToProps = (state) => ({
+  userReducer : state.userReducer,
+});
+
+const CreateAccountScreen = connect(mapStateToProps, { onUserLogIn, onUserLogOut, onFetchProduct })(CreateAccount);
+
+export default CreateAccountScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  inputContainer:{
+    height: 45,
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderRadius: 15,
+    marginLeft:10,
+    marginRight:10,
+    marginTop:10
+  },
+  input:{
+    flex: 1,
+    paddingLeft: 10,
+    fontSize: 20,
+  },
+  inputImage:{
+    padding: 5,
+    alignSelf: "center"
+  },
+  forgetPasswordButton:{
+    flexDirection:'row', 
+    fontSize:12, 
+    padding:2, 
+    color:"gray"
+  },
+  forgetPasswordButtonText:{
+    marginLeft: 180,
+    textDecorationLine: 'underline',
+  },
+  errorText:{
+    paddingTop:5,
+    fontWeight:'bold',
+    fontSize:15,
+    color:'red',
+    height:20
+  },
+  successText:{
+    paddingTop:5,
+    fontWeight:'bold',
+    fontSize:15,
+    height:20
+  },
+  loginButton:{
+    width:"90%",
+    backgroundColor:"#cccccc",
+    borderRadius:25,
+    height:50,
+    alignItems:"center",
+    justifyContent:"center",
+    marginTop:10,
+    marginBottom:10
+  },
+  loginButtonText:{
+    fontSize:18
+  },
+  createAccountButton:{
+    width:"90%",
+    borderRadius:25,
+    borderWidth: 1,
+    height:50,
+    alignItems:"center",
+    justifyContent:"center",
+    marginTop:10,
+    marginBottom:10
+  },
+  createAccountButtonText:{
+    fontSize:18
+  }
+});

@@ -24,19 +24,20 @@ const SignIn = (props) => {
   const {userReducer, onUserLogIn, onUserLogOut, onFetchProduct} = props;
 
   const {currentUser, products, appError} = userReducer;
-  if(appError != "" && appError != error){
+  /* if(appError != "" && appError != error){
     setError(appError);
-  }
+  } */
   
-  function authentification() {
+  function signInVerification() {    
     if(emailVerification()){
       if(passwordVerification()){
         setEmailError(false);
         setPasswordError(false);
         onUserLogIn({email: valueEmail, password: valuePassword});
+        setError(appError);
       }
       else{
-        setError("Le mot de passe est trop court ! (4 caractères min.)");
+        setError("Le mot de passe est trop court ! (6 caractères min.)");
       }
     }
     else{
@@ -50,9 +51,9 @@ const SignIn = (props) => {
     return re.test(valueEmail);
   }
 
-  // RETURN TRUE IF PASSWORD VALUE IS NOT NULL AND 4 OR + CHARACTERS LONG ELSE RETURN FALSE
+  // RETURN TRUE IF PASSWORD VALUE IS NOT NULL AND 6 OR + CHARACTERS LONG ELSE RETURN FALSE
   function passwordVerification() {
-    if(valuePassword != null && valuePassword.length >= 4) return true;
+    if(valuePassword != null && valuePassword.length >= 6) return true;
     else return false;
   }
 
@@ -62,7 +63,7 @@ const SignIn = (props) => {
 
       {/* EMAIL */}
       <View style={[styles.inputContainer]}>
-        <MaterialCommunityIcons name={"account"} size={40} style={styles.inputImage}/>
+        <MaterialCommunityIcons name={"at"} size={30} style={styles.inputImage}/>
         <TextInput
           keyboardType = 'email-address'
           onBlur= {() => setEmailError(!emailVerification())}
@@ -80,7 +81,7 @@ const SignIn = (props) => {
       
       {/* MOT DE PASSE */}
       <View style={styles.inputContainer}>
-        <MaterialCommunityIcons name={"lock"} size={37} style={[styles.inputImage, {paddingLeft:3}]}/>
+        <MaterialCommunityIcons name={"lock"} size={28} style={styles.inputImage}/>
         <TextInput
           onBlur= {() => setPasswordError(!passwordVerification())}
           onChangeText= {text => onChangeTextPassword(text)}
@@ -95,17 +96,20 @@ const SignIn = (props) => {
           }]}
         />
         <TouchableOpacity onPress={() => setPasswordHidden(!passwordHidden)} style={styles.inputImage}>
-          <MaterialCommunityIcons name={passwordHidden ? 'eye' : 'eye-off'} size={25} style={[styles.inputImage]}/>
+          <MaterialCommunityIcons name={passwordHidden ? 'eye' : 'eye-off'} size={25} style={styles.inputImage}/>
+        </TouchableOpacity>
+      </View>
+      
+      <View style={{flexDirection: 'row', justifyContent: 'flex-end', width:"100%"}}>
+        <TouchableOpacity onPress={() => navigate("ForgetPassword")} style={styles.forgetPasswordButton}>
+          <Text style={[styles.forgetPasswordButtonText, {}]}>Mot de passe oublié ?</Text>
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={() => navigate("ForgetPassword")} style={{flexDirection:'row', fontSize:12, padding:2, color:"gray"}}>
-        <Text style={styles.forgetPasswordButtonText}>Mot de passe oublié ?</Text>
-      </TouchableOpacity>
-      
-      {(error!== "") ? (<Text style={{fontWeight:'bold', fontSize:15, color:'red', height:20}}>{error}</Text>) : (<Text></Text>)}
+      {/* MOT DE PASSE */}
+      {(error!== "") ? (<Text style={styles.errorText}>{error}</Text>) : (<Text></Text>)}
 
-      <TouchableOpacity onPress={() => authentification()} style={styles.loginButton}>
+      <TouchableOpacity onPress={() => signInVerification()} style={styles.loginButton}>
         <Text style={{fontSize:18}}>Connexion</Text>
       </TouchableOpacity>
       
@@ -145,17 +149,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   inputImage:{
-    padding: 2,
+    padding: 5,
     alignSelf: "center"
   },
   forgetPasswordButton:{
-    fontSize:12,
+    fontSize:12, 
+    padding:2, 
     color:"gray",
-    marginBottom: 20,
+    marginRight:30
   },
   forgetPasswordButtonText:{
-    marginLeft: 180,
     textDecorationLine: 'underline',
+  },
+  errorText:{
+    fontWeight:'bold',
+    fontSize:15,
+    color:'red',
+    height:20
   },
   loginButton:{
     width:"90%",

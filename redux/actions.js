@@ -5,10 +5,13 @@ import axios from 'axios';
 //
 export const onUserLogIn = ({email, password}) => {
     return async (dispatch) => {
+        dispatch({type: 'ON_ERROR', payload: ""});
         try{
-            dispatch({type: 'ON_ERROR', payload: ""});
             const response = await axios.post('http://localhost:8888/?action=authenticate', {email, password});
+            console.log("LOG IN:");
             dispatch({type: 'DO_LOGIN', payload: response.data});
+            echo (response.data);
+            console.log(reponse.data);
         }
         catch (error){
             if(error == "Error: Network Error") dispatch({type: 'ON_ERROR', payload: "Serveur inaccessible ! Etes vous connecté à internet ?"});
@@ -28,7 +31,23 @@ export const onUserLogOut = ({}) => {
             dispatch({type: 'ON_ERROR', payload: error});
         }
     }
-    
+}
+
+export const onCreateAccount = ({username, email, password}) => {
+    return async (dispatch) => {
+        try{
+            dispatch({type: 'ON_ERROR', payload: ""});
+            const response = await axios.post('http://localhost:8888/?action=users', {username, email, password});
+            dispatch({type: 'DO_CREATE_ACCOUNT', payload: response.data});
+            console.log(reponse);
+        }
+        catch (error){
+            if(error == "Error: Network Error") dispatch({type: 'ON_ERROR', payload: "Serveur inaccessible ! Etes vous connecté à internet ?"});
+            else {
+                dispatch({type: 'ON_ERROR', payload: "Erreur:" + error});
+            }
+        }
+    }
 }
 
 /* export const onFetchProduct = () => {

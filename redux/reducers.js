@@ -21,6 +21,12 @@ export default function (state = initialState, action) {
                 currentUser: null,
             };
 
+        case 'DO_CREATE_ACCOUNT':
+            return {
+                ...state,
+                currentUser: action.payload,
+            };
+
         case 'FETCH_PRODUCT':
             return {
                 ...state,
