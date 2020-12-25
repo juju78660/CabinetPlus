@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView} from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Image} from "react-native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
@@ -24,16 +24,15 @@ const SignIn = (props) => {
   const {userReducer, onUserLogIn, onUserLogOut, onFetchProduct} = props;
 
   const {currentUser, products, appError} = userReducer;
-  /* if(appError != "" && appError != error){
-    setError(appError);
-  } */
   
   function signInVerification() {    
     if(emailVerification()){
       if(passwordVerification()){
+        console.log("CONNEXION");
         setEmailError(false);
         setPasswordError(false);
         onUserLogIn({email: valueEmail, password: valuePassword});
+        console.log("ERREUR:" + appError);
         setError(appError);
       }
       else{
@@ -59,6 +58,9 @@ const SignIn = (props) => {
 
   return (
     <ScreenContainer>
+      <Image style={{ resizeMode: 'contain', height: 220 }} source={require("../src/Logo.001.png")}/>
+      
+
       <Text style={{fontSize:40}}>Connexion</Text>
 
       {/* EMAIL */}
@@ -99,7 +101,7 @@ const SignIn = (props) => {
           <MaterialCommunityIcons name={passwordHidden ? 'eye' : 'eye-off'} size={25} style={styles.inputImage}/>
         </TouchableOpacity>
       </View>
-      
+
       <View style={{flexDirection: 'row', justifyContent: 'flex-end', width:"100%"}}>
         <TouchableOpacity onPress={() => navigate("ForgetPassword")} style={styles.forgetPasswordButton}>
           <Text style={[styles.forgetPasswordButtonText, {}]}>Mot de passe oublié ?</Text>
@@ -107,7 +109,7 @@ const SignIn = (props) => {
       </View>
 
       {/* MOT DE PASSE */}
-      {(error!== "") ? (<Text style={styles.errorText}>{error}</Text>) : (<Text></Text>)}
+      {(error!== "") ? (<Text style={styles.errorText}>{error}</Text>) : (<Text style={styles.errorText}></Text>)}
 
       <TouchableOpacity onPress={() => signInVerification()} style={styles.loginButton}>
         <Text style={{fontSize:18}}>Connexion</Text>
@@ -133,6 +135,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center"
+  },
+  logo: {
+    resizeMode : 'contain',
   },
   inputContainer:{
     height: 45,

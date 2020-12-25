@@ -1,19 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from "react-native";
+import { StyleSheet } from "react-native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 import Home from '../screens/Home';
+import Documents from '../screens/Documents';
 import Profile from '../screens/Profile';
+import Tracking from '../screens/Tracking';
 
 const Tab = createBottomTabNavigator();
 
 
 const MainNavigator = ({navigation}) => (
-  <Tab.Navigator screenOptions={({ route }) => ({
-    tabBarIcon: ({ focused, color, size }) => {
+  <Tab.Navigator     initialRouteName='Tracking'
+   screenOptions={({ route }) => ({
+    tabBarIcon: ({ focused, color }) => {
       let iconName;
 
       if (route.name === 'Home') {
@@ -21,27 +24,37 @@ const MainNavigator = ({navigation}) => (
       } else if (route.name === 'Profile') {
         iconName = "account";
       }
+      else if (route.name === 'Documents') {
+        iconName = "file-document";
+      }
+      else if (route.name === 'Tracking') {
+        iconName = "map-marker";
+      }
+      if(focused) color = "black";
+      else color = "gray";
 
-      // You can return any component that you like here!
-      <MaterialCommunityIcons name={iconName} color={color} size={20} />
+      return (<MaterialCommunityIcons name={iconName} color={color} size={35} />)
     },
   })}
   tabBarOptions={{
+    labelStyle: {
+      fontSize: 15
+    },
     activeTintColor: 'black',
     inactiveTintColor: 'gray',
   }}
 >
     <Tab.Screen name="Home" component={Home} options={{
             tabBarLabel: "Accueil",
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="home" color={color} size={size} />
-            ),
+          }}/>
+    <Tab.Screen name="Tracking" component={Tracking} options={{
+            tabBarLabel: "Tracking",
+          }}/>
+    <Tab.Screen name="Documents" component={Documents} options={{
+            tabBarLabel: "Documents",
           }}/>
     <Tab.Screen name="Profile" component={Profile} options={{
             tabBarLabel: "Profil",
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="account" color={color} size={size} />
-            ),
           }}/>
   </Tab.Navigator>
 );
@@ -53,16 +66,5 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: "center",
       alignItems: "center"
-    },
-    input: {
-      width:"80%",
-      fontSize: 20,
-      height: 44,
-      padding: 10,
-      borderWidth: 1,
-      borderRadius: 5,
-      borderColor: 'grey',
-      marginVertical: 10,
-      color:"#888"
-    },
+    }
   });

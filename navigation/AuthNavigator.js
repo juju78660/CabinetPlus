@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from "react-native";
+import { StyleSheet } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from '@react-navigation/native';
 
 
 import SignIn from '../screens/SignIn';
@@ -31,11 +30,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center"
-  },
-  button: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginVertical: 10,
-    borderRadius: 5
   }
 });

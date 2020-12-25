@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Button, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Alert} from "react-native";
+import { View, Button, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Alert, Image} from "react-native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
 
@@ -31,33 +31,6 @@ const CreateAccount = (props) => {
   const {userReducer, onUserLogIn, onUserLogOut, onFetchProduct} = props;
 
   const {currentUser, products, appError} = userReducer;
-  if(appError != "" && appError != error){
-    setError(appError);
-  }
-  
-  function signUpVerification() {
-    setError("");
-    if(usernameVerification()){
-      if(emailVerification()){
-        if(passwordVerification()){
-          setUsernameError(false);
-          setEmailError(false);
-          setPasswordError(false);
-          Alert.alert("INSCRIPTION");
-          //onUserLogIn({email: valueEmail, password: valuePassword});
-        }
-        else{
-          setError(passwordErrorMessage);
-        }
-      }
-      else{
-        setError("L'adresse e-mail n'est pas correctement renseignée !");
-      }
-    }
-    else{
-      setError("Le nom d'utilisateur est trop court ! (6 caractères min.)");
-    }
-  }
 
   async function accountCreation() {
     setError("");
@@ -99,7 +72,7 @@ const CreateAccount = (props) => {
           });
         }
         else{
-          setError(passwordErrorMessage);
+          setError("Le mot de passe n'est pas correctement renseigné !");
         }
       }
       else{
@@ -140,6 +113,8 @@ const CreateAccount = (props) => {
 
   return (
     <ScreenContainer>
+      <Image style={{ resizeMode: 'contain', height: 220 }} source={require("../src/Logo.001.png")}/>
+
       <Text style={{fontSize:40}}>Inscription</Text>
 
       {/* NOM UTILISATEUR */}
@@ -272,14 +247,14 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   errorText:{
-    paddingTop:5,
+    marginTop:5,
     fontWeight:'bold',
     fontSize:15,
     color:'red',
     height:20
   },
   successText:{
-    paddingTop:5,
+    marginTop:5,
     fontWeight:'bold',
     fontSize:15,
     height:20

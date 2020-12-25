@@ -22,7 +22,7 @@ const Profile = (props) => {
       <Text style={{fontSize:40, alignSelf: 'center'}}>Profil</Text>
       <View style={{flexDirection: 'row', justifyContent: 'flex-end', width:"100%"}}>
         <TouchableOpacity onPress={() => onUserLogOut({})} >
-          <MaterialCommunityIcons name='logout' size={40} style={styles.inputImage}/>
+          <MaterialCommunityIcons name='logout' size={40}/>
         </TouchableOpacity>
       </View>
       <Text>{currentUser.username}</Text>
@@ -42,15 +42,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center"
-  },
-  button:{
-    width:"90%",
-    backgroundColor:"#cccccc",
-    borderRadius:25,
-    height:50,
-    alignItems:"center",
-    justifyContent:"center",
-    marginTop:10,
-    marginBottom:10
   }
 });

@@ -4,14 +4,12 @@ import axios from 'axios';
 // Action...
 //
 export const onUserLogIn = ({email, password}) => {
+    console.log("CONNEXION");
     return async (dispatch) => {
         dispatch({type: 'ON_ERROR', payload: ""});
         try{
-            const response = await axios.post('http://localhost:8888/?action=authenticate', {email, password});
-            console.log("LOG IN:");
+            const response = await axios.post('http://192.168.1.24:8888/?action=authenticate', {email, password});
             dispatch({type: 'DO_LOGIN', payload: response.data});
-            echo (response.data);
-            console.log(reponse.data);
         }
         catch (error){
             if(error == "Error: Network Error") dispatch({type: 'ON_ERROR', payload: "Serveur inaccessible ! Etes vous connecté à internet ?"});
