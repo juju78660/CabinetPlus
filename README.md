@@ -14,6 +14,8 @@ Projet personnel de création d'une application (et d'un site web) permettant à
 
 ## Images:
 Ecran de connexion (page de démarrage si l'utilisateur n'est pas connecté):
+<a href="url"><img src="githubImages/login.PNG" align="left" height="48" width="48" ></a>
+
 ![Ecran de connexion](githubImages/login.PNG =250x250)
 
 Ecran d'inscription:
