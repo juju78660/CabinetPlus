@@ -14,10 +14,10 @@ Projet personnel de création d'une application (et d'un site web) permettant à
 
 ## Images:
 Ecran de connexion (page de démarrage si l'utilisateur n'est pas connecté):
-![Ecran de connexion](githubImages/login.PNG)
+![Ecran de connexion](githubImages/login.PNG =250x250)
 
 Ecran d'inscription:
-![Ecran d'inscription](githubImages/registerViewPassword.PNG)
+![Ecran d'inscription](githubImages/registerViewPassword.PNG =250x250)
 
 Ecran d'affichage des documents:
-![Ecran d'affichage des documents](githubImages/documents.PNG)
+![Ecran d'affichage des documents](githubImages/documents.PNG =250x250)
