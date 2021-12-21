@@ -14,15 +14,15 @@ Projet personnel de création d'une application (et d'un site web) permettant à
 
 ## Images:
 * Ecran de connexion (page de démarrage si l'utilisateur n'est pas connecté):    
-<a href="url"><img src="githubImages/login.PNG" align="left" height="512" width="256" ></a></br>   
+<a href="url"><img src="githubImages/login.PNG" height="512" width="256" ></a></br>   
 
 
 
 
 * Ecran d'inscription:    
-<a href="url"><img src="githubImages/registerViewPassword.PNG" align="left" height="512" width="256" ></a></br>   
+<a href="url"><img src="githubImages/registerViewPassword.PNG" height="512" width="256" ></a></br>   
 
 
 
 * Ecran d'affichage des documents:    
-<a href="url"><img src="githubImages/documents.PNG" align="left" height="512" width="256" ></a></br>  
+<a href="url"><img src="githubImages/documents.PNG" height="512" width="256" ></a></br>  
