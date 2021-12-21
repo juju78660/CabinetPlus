@@ -9,4 +9,15 @@ Projet personnel de création d'une application (et d'un site web) permettant à
 
 ## Technologies/Langages utilisés:  
 * Expo (React native)   
-* API pour envoyer/récupérer des données  
+* Inscription/Connexion avec Firebase (pour le moment, avant migration sur l'API)
+* API :construction:
+
+## Images:
+Ecran de connexion (page de démarrage si l'utilisateur n'est pas connecté):
+![Ecran de connexion](githubImages/login.PNG)
+
+Ecran d'inscription:
+![Ecran d'inscription](githubImages/registerViewPassword.PNG)
+
+Ecran d'affichage des documents:
+![Ecran d'affichage des documents](githubImages/documents.PNG)
