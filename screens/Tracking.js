@@ -1,6 +1,8 @@
-import React from 'react';
-import { StyleSheet, SafeAreaView, TouchableOpacity, Text, Alert } from "react-native";
+import React, {useState, useEffect} from 'react';
+import { Button, StyleSheet, SafeAreaView, TouchableOpacity, Text, Alert } from "react-native";
+//import * as Location from 'expo-location';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 /* LOCATION:
 ABLIS:  48.516594, 1.834314
@@ -15,6 +17,7 @@ import MapView, { AnimatedRegion, Marker } from 'react-native-maps';
 //REDUX
 import { connect } from 'react-redux';
 import { onUserLogOut, onUserLogIn } from '../redux/actions';
+//import {usePermissions} from "expo-permissions";
 
 const ScreenContainer = ({ children }) => (
   <SafeAreaView style={styles.container}>{children}</SafeAreaView>
@@ -23,10 +26,44 @@ const ScreenContainer = ({ children }) => (
 
 
 const Tracking = (props) => {
-  const [currentPos, setCurrentPos] = React.useState(false);
-  const {userReducer} = props;
+  const [currentPos, setCurrentPos] = useState(false);
+  //const {userReducer} = props;
 
-  const {currentUser, products, appError} = userReducer;
+    const [location, setLocation] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
+
+
+
+    useEffect(() => {
+        (async () => {
+            let { status } = await Location.requestPermissionsAsync()
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
+
+            let location = await Location.getCurrentPositionAsync({});
+            setLocation(location);
+        })();
+    }, []);
+
+    let text = 'Waiting..';
+    if (errorMsg) {
+        text = errorMsg;
+        console.log("Erreur:" + text);
+    } else if (location) {
+        text = JSON.stringify(location);
+        console.log("Location:" + text);
+    }
+
+  const {region, setRegion } = {
+    latitude: 48.923945,
+    longitude: 2.054325,
+    latitudeDelta: 0.03,
+    longitudeDelta: 0.03
+  };
+  const [marker, setMarker] = React.useState(false); 
+
 
   function getCurrentLocation() {
     navigator.geolocation.getCurrentPosition(
@@ -38,6 +75,7 @@ const Tracking = (props) => {
                 longitudeDelta: 1
             };
             Alert.alert("Position: " + position);
+            return;
         },
         error => console.log(error),
         {
@@ -48,11 +86,23 @@ const Tracking = (props) => {
     );
   }
 
+  function click(e){
+    console.log("Marker:");
+    console.log(e.nativeEvent.coordinate);
+    setMarker(e.nativeEvent.coordinate);
+  };
+
   return (
     <ScreenContainer>
-        <MapView style={styles.map} showsUserLocation={true}/>
-        <Marker coordinate = {{latitude: 48.622921,longitude: 1.830330}}/>
-        <TouchableOpacity onPress={() => Alert.alert("salut")} style={styles.trackingButton}>
+        <MapView style={styles.map} region={region} showsUserLocation followsUserLocation showsMyLocationButton={true}
+          onPress={(e) => click(e)}>
+          {
+                marker &&
+                <MapView.Marker coordinate={marker} />
+          }
+        </MapView>
+        <Text> {text}</Text>
+        <TouchableOpacity onPress={() => getCurrentLocation()} style={styles.trackingButton}>
           <Text style={styles.trackingButtonText}>Tracking</Text>
         </TouchableOpacity>
     </ScreenContainer>
@@ -63,9 +113,10 @@ const mapStateToProps = (state) => ({
   userReducer : state.userReducer,
 });
 
-const TrackingScreen = connect(mapStateToProps, { onUserLogIn, onUserLogOut })(Tracking);
 
-export default TrackingScreen;
+//const TrackingScreen = connect(mapStateToProps, { onUserLogIn, onUserLogOut })(Tracking);
+
+export default Tracking;
 
 const styles = StyleSheet.create({
   container: {

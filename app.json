@@ -17,10 +17,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "location"
+        ]
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "API_KEY": "AIzaSyAcaFMwk7qqGKzDFj9Nvc36UY1st3fzMXg",
+      "AUTH_DOMAIN": "cabinetplus-da986.firebaseapp.com",
+      "DATABASE_URL": "https://cabinetplus-da986.firebaseio.com",
+      "PROJECT_ID": "cabinetplus-da986",
+      "STORAGE_BUCKET": "cabinetplus-da986.appspot.com",
+      "MESSAGE_SENDER_ID": "282769666645",
+      "APP_ID": "1:282769666645:web:ed4c6e2d0e37b920ed9adc"
+    },
   }
 }

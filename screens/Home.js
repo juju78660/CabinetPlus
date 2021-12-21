@@ -2,17 +2,18 @@ import React from 'react';
 import { View, Text, StyleSheet, Button, SafeAreaView } from "react-native";
 
 //REDUX
+/*
 import { connect } from 'react-redux';
 import { onUserLogOut, onUserLogIn, onFetchProduct } from '../redux/actions';
-
+*/
 const ScreenContainer = ({ children }) => (
   <SafeAreaView style={styles.container}>{children}</SafeAreaView>
 );
 
 const Home = (props) => {
-  const {userReducer, onUserLogIn, onUserLogOut, onFetchProduct} = props;
+  //const {userReducer, onUserLogIn, onUserLogOut, onFetchProduct} = props;
 
-  const {currentUser, products, appError} = userReducer;
+  //const {currentUser, products, appError} = userReducer;
 
 
   return (
@@ -28,9 +29,9 @@ const mapStateToProps = (state) => ({
   userReducer : state.userReducer,
 });
 
-const HomeScreen = connect(mapStateToProps, { onUserLogIn, onUserLogOut, onFetchProduct })(Home);
+//const HomeScreen = connect(mapStateToProps, { onUserLogIn, onUserLogOut, onFetchProduct })(Home);
 
-export default HomeScreen;
+export default Home;
 
 const styles = StyleSheet.create({
   container: {

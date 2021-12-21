@@ -1,12 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Image} from "react-native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import {signIn} from "../API/firebaseMethods";
+import {Alert} from "react-native";
+import axios from "axios";
 
 //REDUX
+/*
 import { connect } from 'react-redux';
 import { onUserLogIn, onUserLogOut, onFetchProduct } from '../redux/actions';
-
+*/
 const ScreenContainer = ({ children }) => (
   <SafeAreaView style={styles.container}>{children}</SafeAreaView>
   );
@@ -21,19 +24,22 @@ const SignIn = (props) => {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordHidden, setPasswordHidden] = React.useState(true);
 
-  const {userReducer, onUserLogIn, onUserLogOut, onFetchProduct} = props;
+  //const {userReducer, onUserLogIn, onUserLogOut, onFetchProduct} = props;
 
-  const {currentUser, products, appError} = userReducer;
-  
-  function signInVerification() {    
+  //const {currentUser, products, appError} = userReducer;
+
+  function signInVerification() {
     if(emailVerification()){
       if(passwordVerification()){
-        console.log("CONNEXION");
+        setError(false);
         setEmailError(false);
         setPasswordError(false);
-        onUserLogIn({email: valueEmail, password: valuePassword});
-        console.log("ERREUR:" + appError);
-        setError(appError);
+        var response = signIn(valueEmail, valuePassword);
+        /*onUserLogIn({email: valueEmail, password: valuePassword});
+        if(appError) {
+          console.log("ERREUR:" + appError);
+          setError(appError);
+        }*/
       }
       else{
         setError("Le mot de passe est trop court ! (6 caractères min.)");
@@ -54,6 +60,17 @@ const SignIn = (props) => {
   function passwordVerification() {
     if(valuePassword != null && valuePassword.length >= 6) return true;
     else return false;
+  }
+
+  // FUNCTION THAT USES CABINET PLUS API TO LOGIN -> NOT WORKING YET
+  async function signInTest(email, password) {
+    try {
+      const response = await axios.get('https://localhost/login', {params:{'email':email, 'password': password}});
+      Alert.alert("Error", response);
+    } catch (err) {
+      if (err.message == "The password is invalid or the user does not have a password.") Alert.alert("Email/mot de passe invalide !");
+      else Alert.alert("Error", err.message);
+    }
   }
 
   return (
@@ -109,7 +126,7 @@ const SignIn = (props) => {
       </View>
 
       {/* MOT DE PASSE */}
-      {(error!== "") ? (<Text style={styles.errorText}>{error}</Text>) : (<Text style={styles.errorText}></Text>)}
+      {(error) ? (<Text style={styles.errorText}>{error}</Text>) : (<Text style={styles.errorText}></Text>)}
 
       <TouchableOpacity onPress={() => signInVerification()} style={styles.loginButton}>
         <Text style={{fontSize:18}}>Connexion</Text>
@@ -126,14 +143,13 @@ const mapStateToProps = (state) => ({
   userReducer : state.userReducer,
 });
 
-const SignInScreen = connect(mapStateToProps, { onUserLogIn, onUserLogOut, onFetchProduct })(SignIn);
+//const SignInScreen = connect(mapStateToProps, { onUserLogIn, onUserLogOut, onFetchProduct })(SignIn);
 
-export default SignInScreen;
+export default SignIn;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center"
   },
   logo: {

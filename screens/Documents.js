@@ -2,10 +2,13 @@ import React from 'react';
 import { View, Text, StyleSheet, Button, SafeAreaView, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+import AddDocument from "../screens/AddDocument";
+
 //REDUX
+/*
 import { connect } from 'react-redux';
 import { onUserLogOut, onUserLogIn } from '../redux/actions';
-
+*/
 const ScreenContainer = ({ children }) => (
   <SafeAreaView style={styles.container}>{children}</SafeAreaView>
 );
@@ -14,16 +17,17 @@ const DocumentView = ({title, date, fileLink}) => (
   <View style={styles.documentScrollElement}>
     <Text style={{flex: 1, paddingLeft: 5}}> {title}</Text>
     <Text style={{flex: 1}}> {date} </Text>
-    <TouchableOpacity onPress={() => Alert.alert("Affichage document")} >
+    <TouchableOpacity onPress={() => Alert.alert("Affichage document " + title)} >
       <MaterialCommunityIcons name='file-eye-outline' size={30} style={styles.viewDocumentButton}/>
     </TouchableOpacity>
   </View>
 );
 
 const Documents = (props) => {
-  const {userReducer} = props;
+  //const {userReducer} = props;
+  const { navigate } = props.navigation;
 
-  const {currentUser, products, appError} = userReducer;
+  //const {currentUser, products, appError} = userReducer;
 
 
   return (
@@ -41,7 +45,7 @@ const Documents = (props) => {
           <DocumentView title="McDo" date= '16/10/2020' fileLink= 'Indemnite1'></DocumentView>
         </ScrollView>
 
-        <TouchableOpacity onPress={() => Alert.alert("button")} style={styles.importDocumentButton}>
+        <TouchableOpacity onPress={() => navigate("AddDocument")} style={styles.importDocumentButton}>
           <Text style={styles.importDocumentButtonText}>Ajouter un document</Text>
         </TouchableOpacity>
     </ScreenContainer>
@@ -52,9 +56,9 @@ const mapStateToProps = (state) => ({
   userReducer : state.userReducer,
 });
 
-const DocumentsScreen = connect(mapStateToProps, { onUserLogIn, onUserLogOut })(Documents);
+//const DocumentsScreen = connect(mapStateToProps, {})(Documents);
 
-export default DocumentsScreen;
+export default Documents;
 
 const styles = StyleSheet.create({
   container: {

@@ -7,6 +7,7 @@ import axios from 'axios';
 //REDUX
 import { connect } from 'react-redux';
 import { onUserLogIn, onUserLogOut, onFetchProduct } from '../redux/actions';
+import {registration, signIn} from "../API/firebaseMethods";
 
 const ScreenContainer = ({ children }) => (
   <SafeAreaView style={styles.container}>{children}</SafeAreaView>
@@ -28,9 +29,9 @@ const CreateAccount = (props) => {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordHidden, setPasswordHidden] = React.useState(true);
 
-  const {userReducer, onUserLogIn, onUserLogOut, onFetchProduct} = props;
+  //const {userReducer, onUserLogIn, onUserLogOut, onFetchProduct} = props;
 
-  const {currentUser, products, appError} = userReducer;
+  //const {currentUser, products, appError} = userReducer;
 
   async function accountCreation() {
     setError("");
@@ -44,7 +45,8 @@ const CreateAccount = (props) => {
           const username = valueUsername;
           const email = valueEmail;
           const password = valuePassword1;
-          axios.post('http://localhost:8888/?action=users', {username, email, password})
+          var response = registration(username, email, password, 'DEFAULT_TO_BE_CHANGED', 'DEFAULT_TO_BE_CHANGED');
+          /*axios.post('http://localhost:8888/?action=users', {username, email, password})
           .then(function(){
             console.log("CA MARCHE");
             setSuccessMessage("Le compte a bien été crée");
@@ -68,11 +70,12 @@ const CreateAccount = (props) => {
             }
             else { // Something happened in setting up the request that triggered an Error
               console.log('Error', error.message);
+              setError('Error:' + error.message);
             }
-          });
+          });*/
         }
         else{
-          setError("Le mot de passe n'est pas correctement renseigné !");
+          setError(passwordErrorMessage);
         }
       }
       else{
@@ -101,14 +104,14 @@ const CreateAccount = (props) => {
     if(valuePassword1 == null || valuePassword2 == null){
       setPasswordErrorMessage("L'un des mots de passe n'est pas correctement renseigné");
       return false;
-    } 
+    }
     else if (valuePassword1 === valuePassword2 && valuePassword1.length >= 6){
       return true;
     }
     else{
       setPasswordErrorMessage("Les mots de passe entrés ne sont pas identiques !");
       return false;
-    } 
+    }
   }
 
   return (
@@ -208,14 +211,13 @@ const mapStateToProps = (state) => ({
   userReducer : state.userReducer,
 });
 
-const CreateAccountScreen = connect(mapStateToProps, { onUserLogIn, onUserLogOut, onFetchProduct })(CreateAccount);
+//const CreateAccountScreen = connect(mapStateToProps, { onUserLogIn, onUserLogOut, onFetchProduct })(CreateAccount);
 
-export default CreateAccountScreen;
-
+//export default CreateAccountScreen;
+export default CreateAccount;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center"
   },
   inputContainer:{
